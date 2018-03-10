@@ -7,10 +7,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FiiPrezent
 {
-    internal class Startup
+    public class Startup
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -20,19 +21,7 @@ namespace FiiPrezent
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Use(async (context, next) =>
-            {
-                Uri uri = context.Request.GetUri();
-                Console.WriteLine("before " + uri);
-                await next();
-                Console.WriteLine("after " + uri);
-            });
-            app.Run(async (context) =>
-            {
-                Console.WriteLine("Hello World!");
-                await context.Response.WriteAsync("Hello World!");
-            });
-
+            app.UseMvc();
         }
     }
 }
