@@ -1,4 +1,6 @@
 ﻿using System;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 
 namespace FiiPrezent
 {
@@ -6,7 +8,11 @@ namespace FiiPrezent
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var host = WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>()
+                .Build();
+            
+            host.Run();
         }
     }
-}
+ }
