@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FiiPrezent.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FiiPrezent.Controllers
 {
@@ -9,5 +10,17 @@ namespace FiiPrezent.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult Index(RsvpViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            return RedirectToAction("Index");
+        }
+
     }
 }

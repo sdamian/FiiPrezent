@@ -1,4 +1,7 @@
-﻿@{
+﻿@using FiiPrezent.Controllers
+@using FiiPrezent.Models
+@model RsvpViewModel
+@{
     ViewData["Title"] = "Prezent";
 }
 
@@ -6,16 +9,20 @@
 
     <div class="col-sm-4 col-sm-offset-4">
         <h2>Fii Prezent</h2>
-        <form>
+        <form asp-controller="Home" asp-action="Index" method="post">
             <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" placeholder="Nume">
+                @* @Html.LabelFor(x => x.Name) *@
+                <label asp-for="Name">Name</label>
+                <input asp-for="Name" type="text" class="form-control" id="name" placeholder="Nume">
+                <span asp-validation-for="Name"></span>
             </div>
             <div class="form-group">
-                <label for="code">Super secret code</label>
-                <input type="password" class="form-control" id="code" placeholder="Cod super secret">
+                <label asp-for="Code">Super secret code</label>
+                <input asp-for="Code" type="password" class="form-control" id="code" placeholder="Cod super secret">
+                <span asp-validation-for="Code"></span>
             </div>
             <button type="submit" class="btn btn-default">Prezent</button>
+
         </form>
     </div>
 
