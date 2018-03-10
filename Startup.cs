@@ -21,7 +21,9 @@ namespace FiiPrezent
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
+            app.UseStaticFiles();
+            app.UseMvcWithDefaultRoute();
+
         }
     }
 }
