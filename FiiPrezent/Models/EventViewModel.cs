@@ -1,4 +1,5 @@
 ﻿using FiiPrezent.Controllers;
+using FiiPrezent.Services;
 
 namespace FiiPrezent.Models
 {
