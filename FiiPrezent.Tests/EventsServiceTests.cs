@@ -6,35 +6,35 @@ namespace FiiPrezent.Tests
 {
     public class EventsServiceTests
     {
-        [Fact]
-        public void WhenTryingToRegisterWithAnInvalidCodeReturnsError()
+        private readonly EventsService _service;
+
+        public EventsServiceTests()
         {
-            var service = new EventsService();
-            var result = service.RegisterParticipant("bad code", "test participant");
+            _service = new EventsService();
+        }
+
+        [Fact]
+        public void RegisterParticipant_rWithAnInvalidCode_ReturnsError()
+        {
+            var result = _service.RegisterParticipant("bad code", "test participant");
+
             result.ShouldBeNull();
         }
 
         [Fact]
-        public void WhenTryingToRegisterWithAValidCodeReturnsSuccess()
+        public void RegisterParticipant_WithAValidCode_ReturnsSuccess()
         {
-            var service = new EventsService();
-            var result = service.RegisterParticipant("cometothedarksidewehavecookies", "test participant");
+            var result = _service.RegisterParticipant("cometothedarksidewehavecookies", "test participant");
+
             result.ShouldNotBeNull();
-            
         }
 
         [Fact]
-        public void WhenTryingToRegisterWithAValidCodeAddsParticipantToEvent()
-        {
-            var service = new EventsService();
+        public void RegisterParticipant_WithAValidCode_AddsParticipantToEvent()
+        {;
+            var result = _service.RegisterParticipant("cometothedarksidewehavecookies", "Tudor");
 
-            string numeParticipant = "Tudor";
-            string validCode = "cometothedarksidewehavecookies";
-
-            var result = service.RegisterParticipant(validCode, numeParticipant);
-
-            result.Participants.ShouldContain(numeParticipant);
-
+            result.Participants.ShouldContain("Tudor");
         }
     }
 }
