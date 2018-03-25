@@ -31,9 +31,9 @@ namespace FiiPrezent.Tests
             string numeParticipant = "Tudor";
             string validCode = "cometothedarksidewehavecookies";
 
-            var result = service.RegisterParticipant(validCode, NumeParticipant);
+            var result = service.RegisterParticipant(validCode, numeParticipant);
 
-            result.Participants.ShouldContain(NumeParticipant);
+            result.Participants.ShouldContain(numeParticipant);
 
         }
     }
