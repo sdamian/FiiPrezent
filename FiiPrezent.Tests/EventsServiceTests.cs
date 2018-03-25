@@ -14,16 +14,27 @@ namespace FiiPrezent.Tests
             result.ShouldBeNull();
         }
 
-        [Fact(Skip = "not implemented")]
+        [Fact]
         public void WhenTryingToRegisterWithAValidCodeReturnsSuccess()
         {
-
+            var service = new EventsService();
+            var result = service.RegisterParticipant("cometothedarksidewehavecookies", "test participant");
+            result.ShouldNotBeNull();
+            
         }
 
-        [Fact(Skip = "not implemented")]
+        [Fact]
         public void WhenTryingToRegisterWithAValidCodeAddsParticipantToEvent()
         {
-            // either interaction testing with moq or use an in memory repo
+            var service = new EventsService();
+
+            string numeParticipant = "Tudor";
+            string validCode = "cometothedarksidewehavecookies";
+
+            var result = service.RegisterParticipant(validCode, NumeParticipant);
+
+            result.Participants.ShouldContain(NumeParticipant);
+
         }
     }
 }
