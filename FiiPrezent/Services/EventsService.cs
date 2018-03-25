@@ -5,7 +5,7 @@ using FiiPrezent.Controllers;
 
 namespace FiiPrezent.Services
 {
-    class EventsService
+    public class EventsService
     {
         private static readonly List<Event> _events = new List<Event>
         {
@@ -20,7 +20,8 @@ namespace FiiPrezent.Services
         public Event RegisterParticipant(string verificationCode, string participantName)
         {
             var @event = FindEventByVerificationCode(verificationCode);
-            @event.RegisterParticipant(participantName);
+            @event?.RegisterParticipant(participantName);
+
             return @event;
         }
 
