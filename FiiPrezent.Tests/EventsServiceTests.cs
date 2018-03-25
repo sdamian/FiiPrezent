@@ -28,7 +28,7 @@ namespace FiiPrezent.Tests
         {
             var service = new EventsService();
 
-            string NumeParticipant = "Tudor";
+            string numeParticipant = "Tudor";
             string validCode = "cometothedarksidewehavecookies";
 
             var result = service.RegisterParticipant(validCode, NumeParticipant);
