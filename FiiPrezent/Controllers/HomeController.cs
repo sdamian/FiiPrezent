@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
-using FiiPrezent.Models;
+﻿using FiiPrezent.Models;
 using FiiPrezent.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
 
 namespace FiiPrezent.Controllers
 {
@@ -16,7 +15,6 @@ namespace FiiPrezent.Controllers
             _eventsService = new EventsService();
         }
 
-        // GET
         public IActionResult Index()
         {
             return View();
@@ -39,17 +37,22 @@ namespace FiiPrezent.Controllers
 
             return RedirectToAction("Event", new
             {
-                Id = @event.Id
+                @event.Id
             });
         }
 
         public IActionResult Event(string id)
         {
-            Guid guid = Guid.Parse(id);
-            Event @event = _eventsService.FindEventById(Guid.Parse(id));
-            return View(new EventViewModel(@event));
+            try
+            {
+                Event @event = _eventsService.FindEventById(Guid.Parse(id));
+
+                return View(new EventViewModel(@event));
+            }
+            catch (Exception)
+            {
+                return RedirectToAction(nameof(Index));
+            }
         }
-
-
     }
 }

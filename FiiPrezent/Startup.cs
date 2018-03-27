@@ -1,4 +1,5 @@
 ﻿using System;
+using FiiPrezent.Hubs;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +12,7 @@ namespace FiiPrezent
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
             services.AddMvc();
         }
         
@@ -20,6 +22,11 @@ namespace FiiPrezent
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<UpdateParticipants>("/participants");
+            });
 
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();

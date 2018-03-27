@@ -14,7 +14,7 @@ namespace FiiPrezent.Tests
         }
 
         [Fact]
-        public void RegisterParticipant_rWithAnInvalidCode_ReturnsError()
+        public void RegisterParticipant_WithAnInvalidCode_ReturnsError()
         {
             var result = _service.RegisterParticipant("bad code", "test participant");
 
@@ -31,7 +31,7 @@ namespace FiiPrezent.Tests
 
         [Fact]
         public void RegisterParticipant_WithAValidCode_AddsParticipantToEvent()
-        {;
+        {
             var result = _service.RegisterParticipant("cometothedarksidewehavecookies", "Tudor");
 
             result.Participants.ShouldContain("Tudor");
