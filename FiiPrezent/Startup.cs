@@ -1,5 +1,6 @@
 ﻿using System;
 using FiiPrezent.Hubs;
+using FiiPrezent.Services;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,7 @@ namespace FiiPrezent
         {
             services.AddSignalR();
             services.AddMvc();
+            services.AddSingleton<EventsService>();
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

@@ -10,9 +10,9 @@ namespace FiiPrezent.Controllers
     {
         private readonly EventsService _eventsService;
 
-        public HomeController()
+        public HomeController(EventsService eventsService)
         {
-            _eventsService = new EventsService();
+            _eventsService = eventsService;
         }
 
         public IActionResult Index()
