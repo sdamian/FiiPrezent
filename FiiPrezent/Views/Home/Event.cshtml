@@ -21,9 +21,8 @@
 {
     <script>
         var participantsList = document.getElementById("participants");
-
         var connection = new signalR.HubConnection("/participants");
-
+        
         function appendParticipant(name) {
             var li = document.createElement("li");
             li.innerText = name;
@@ -31,9 +30,6 @@
         }
 
         connection.on('Update', (list) => {
-
-            list = JSON.parse(list);
-
             participantsList.innerHTML = "";
             list.forEach(function (el) {
                 appendParticipant(el);
@@ -41,11 +37,7 @@
         });
 
         connection.start().then(function () {
-            var url = window.location.pathname;
-            var id = url.substring(url.lastIndexOf("/") + 1);
-
-            connection.invoke("Update", id);
+            connection.invoke("JoinEventRoom", "@Model.Id");
         });
-
     </script>
 }

@@ -18,6 +18,8 @@ namespace FiiPrezent.Services
         public string VerificationCode { get; set; }
         public string[] Participants => _participants.ToArray();
 
+        public string SignalrGroup => Id.ToString();
+
         public void RegisterParticipant(string name)
         {
             _participants.Add(name);
