@@ -16,6 +16,7 @@ namespace FiiPrezent
             services.AddSignalR();
             services.AddMvc();
             services.AddSingleton<EventsService>();
+            services.AddScoped<IParticipantsUpdated, ParticipantsUpdated>();
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.SignalR;
 using FiiPrezent.Services;
 using Shouldly;
 using Xunit;
+using Moq;
+using FiiPrezent.Hubs;
 
 namespace FiiPrezent.Tests
 {
@@ -10,7 +13,8 @@ namespace FiiPrezent.Tests
 
         public EventsServiceTests()
         {
-            _service = new EventsService();
+            var mock = new Mock<IParticipantsUpdated>();
+            _service = new EventsService(mock.Object);
         }
 
         [Fact]

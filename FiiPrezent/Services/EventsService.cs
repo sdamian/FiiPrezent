@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using FiiPrezent.Controllers;
-using FiiPrezent.Hubs;
-using Microsoft.AspNetCore.SignalR;
 
 namespace FiiPrezent.Services
 {
     public class EventsService
     {
+        private readonly IParticipantsUpdated _participantsUpdated;
+
         private static readonly List<Event> _events = new List<Event>
         {
             new Event
@@ -19,28 +19,25 @@ namespace FiiPrezent.Services
                 VerificationCode = "cometothedarksidewehavecookies"
             }
         };
-        
-        private readonly IHubContext<UpdateParticipants> _hubContext;
 
-        public EventsService(IHubContext<UpdateParticipants> hubContext)
+        public EventsService(IParticipantsUpdated participantsUpdated)
         {
-            _hubContext = hubContext;
+            _participantsUpdated = participantsUpdated;
         }
 
         public Event RegisterParticipant(string verificationCode, string participantName)
         {
             var @event = FindEventByVerificationCode(verificationCode);
-            if (@event == null) 
+            if (@event == null)
             {
                 return null;
             }
 
             @event.RegisterParticipant(participantName);
-            var group = _hubContext.Clients.Group(@event.SignalrGroup);
-            group.SendAsync("Update", @event.Participants, null); // the null is a stupid hack to pass the participants array as one param
-       
+            _participantsUpdated.OnParticipantsUpdated(@event.Id, @event.Participants);
             return @event;
         }
+
 
         public Event FindEventByVerificationCode(string verificationCode)
         {
