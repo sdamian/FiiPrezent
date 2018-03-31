@@ -43,16 +43,9 @@ namespace FiiPrezent.Controllers
 
         public IActionResult Event(string id)
         {
-            try
-            {
-                Event @event = _eventsService.FindEventById(Guid.Parse(id));
+            Event @event = _eventsService.FindEventById(Guid.Parse(id));
 
-                return View(new EventViewModel(@event));
-            }
-            catch (Exception)
-            {
-                return RedirectToAction(nameof(Index));
-            }
+            return View(new EventViewModel(@event));
         }
     }
 }
