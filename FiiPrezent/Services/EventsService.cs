@@ -7,7 +7,7 @@ namespace FiiPrezent.Services
 {
     public class EventsService
     {
-        private readonly IParticipantsUpdated _participantsUpdated;
+        private readonly IParticipantsUpdatedNotifier _participantsUpdatedNotifierNotifier;
 
         private static readonly List<Event> _events = new List<Event>
         {
@@ -20,9 +20,9 @@ namespace FiiPrezent.Services
             }
         };
 
-        public EventsService(IParticipantsUpdated participantsUpdated)
+        public EventsService(IParticipantsUpdatedNotifier participantsUpdatedNotifierNotifier)
         {
-            _participantsUpdated = participantsUpdated;
+            _participantsUpdatedNotifierNotifier = participantsUpdatedNotifierNotifier;
         }
 
         public Event RegisterParticipant(string verificationCode, string participantName)
@@ -34,7 +34,7 @@ namespace FiiPrezent.Services
             }
 
             @event.RegisterParticipant(participantName);
-            _participantsUpdated.OnParticipantsUpdated(@event.Id, @event.Participants);
+            _participantsUpdatedNotifierNotifier.OnParticipantsUpdated(@event.Id, @event.Participants);
             return @event;
         }
 

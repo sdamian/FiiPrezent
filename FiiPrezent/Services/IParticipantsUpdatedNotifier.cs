@@ -2,7 +2,7 @@
 
 namespace FiiPrezent.Services
 {
-    public interface IParticipantsUpdated
+    public interface IParticipantsUpdatedNotifier
     {
         void OnParticipantsUpdated(Guid eventId, string[] newParticipants);
     }

@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace FiiPrezent.Services
 {
-    class ParticipantsUpdated : IParticipantsUpdated
+    class ParticipantsUpdatedNotifier : IParticipantsUpdatedNotifier
     {
         private readonly IHubContext<UpdateParticipants> _hubContext;
 
-        public ParticipantsUpdated(IHubContext<UpdateParticipants> hubContext)
+        public ParticipantsUpdatedNotifier(IHubContext<UpdateParticipants> hubContext)
         {
             _hubContext = hubContext;
         }

@@ -13,7 +13,7 @@ namespace FiiPrezent.Tests
 
         public EventsServiceTests()
         {
-            var mock = new Mock<IParticipantsUpdated>();
+            var mock = new Mock<IParticipantsUpdatedNotifier>();
             _service = new EventsService(mock.Object);
         }
 
