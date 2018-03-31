@@ -1,8 +1,7 @@
-﻿@using FiiPrezent.Models
-@model EventViewModel
+﻿@model EventViewModel
 
 @{
-    ViewBag.Title = "Event";
+    ViewBag.Title = "Event Details";
     Layout = "_Layout";
 }
 
@@ -10,9 +9,9 @@
 <span>@Model.Description</span>
 
 <ol id="participants">
-    @foreach (var p in @Model.Participants)
+    @foreach (string participant in @Model.Participants)
     {
-        <li>@p</li>
+        <li>@participant</li>
     }
 </ol>
 

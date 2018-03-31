@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FiiPrezent.Controllers;
 
 namespace FiiPrezent.Services
 {
     public class EventsService
     {
-        private readonly IParticipantsUpdatedNotifier _participantsUpdatedNotifierNotifier;
+        private readonly IParticipantsUpdatedNotifier _participantsUpdatedNotifier;
 
-        private static readonly List<Event> _events = new List<Event>
+        private static readonly List<Event> Events = new List<Event>
         {
             new Event
             {
@@ -20,9 +19,9 @@ namespace FiiPrezent.Services
             }
         };
 
-        public EventsService(IParticipantsUpdatedNotifier participantsUpdatedNotifierNotifier)
+        public EventsService(IParticipantsUpdatedNotifier participantsUpdatedNotifier)
         {
-            _participantsUpdatedNotifierNotifier = participantsUpdatedNotifierNotifier;
+            _participantsUpdatedNotifier = participantsUpdatedNotifier;
         }
 
         public Event RegisterParticipant(string verificationCode, string participantName)
@@ -34,19 +33,20 @@ namespace FiiPrezent.Services
             }
 
             @event.RegisterParticipant(participantName);
-            _participantsUpdatedNotifierNotifier.OnParticipantsUpdated(@event.Id, @event.Participants);
+            _participantsUpdatedNotifier.OnParticipantsUpdated(@event.Id, @event.Participants);
+
             return @event;
         }
 
 
         public Event FindEventByVerificationCode(string verificationCode)
         {
-            return _events.SingleOrDefault(x => x.VerificationCode == verificationCode);
+            return Events.SingleOrDefault(x => x.VerificationCode == verificationCode);
         }
 
         public Event FindEventById(Guid id)
         {
-            return _events.Single(x => x.Id == id);
+            return Events.Single(x => x.Id == id);
         }
     }
 }
