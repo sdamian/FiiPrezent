@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FiiPrezent.Services
 {
@@ -31,27 +32,76 @@ namespace FiiPrezent.Services
 
         public CreatedResult TryCreateEvent(string name, string descr, string code)
         {
-            var @event = new Event
+            var @event = _eventsRepo.FindEventByVerificationCode(code);
+
+            CreatedResult result = new CreatedResult();
+
+            if (@event != null)
+                result.AddError(ErrorType.CodeAlreadyExists);
+
+            if (string.IsNullOrEmpty(name))
+                result.AddError(ErrorType.NameIsMissing);
+
+            if (name.Length > 20)
+                result.AddError(ErrorType.NameIsTooLong);
+
+            if (code.Length < 4)
+                result.AddError(ErrorType.CodeIsTooShort);
+
+            if (string.IsNullOrEmpty(descr))
+                result.AddError(ErrorType.DescriptionIsMissing);
+
+            @event = new Event
             {
                 Name = name,
                 Description = descr,
                 VerificationCode = code,
             };
+
             _eventsRepo.Add(@event);
 
-            return new CreatedResult(@event.Id);
+            return result;
         }
 
         public class CreatedResult
         {
-            public CreatedResult(Guid? eventId, string[] errors = null)
+            public CreatedResult()
             {
-                EventId = eventId;
-                Errors = errors ?? new string[0];
+                ErrorsList = new List<ErrorType>();
             }
 
-            public Guid? EventId { get; set; }
-            public string[] Errors { get; set; }
+            public void AddError(ErrorType error)
+            {
+                ErrorsList.Add(error);
+            }
+
+            public CreatedResult(ErrorType errorType)
+            {
+                ErrorsList = new List<ErrorType>
+                {
+                    errorType
+                };
+            }
+
+            public bool Succeded
+            {
+                get
+                {
+                    return ErrorsList.Count == 0;
+                }
+            }
+
+            public Guid EventId { get; set; }
+            public List<ErrorType> ErrorsList { get; set; }
         }
+    }
+
+    public enum ErrorType
+    {
+        CodeAlreadyExists,
+        NameIsMissing,
+        NameIsTooLong,
+        DescriptionIsMissing,
+        CodeIsTooShort
     }
 }
