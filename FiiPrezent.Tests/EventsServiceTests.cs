@@ -1,26 +1,26 @@
-using Microsoft.AspNetCore.SignalR;
+using System;
+using System.Collections.Generic;
 using FiiPrezent.Services;
 using Shouldly;
 using Xunit;
 using Moq;
-using FiiPrezent.Hubs;
 
 namespace FiiPrezent.Tests
 {
     public class EventsServiceTests
     {
-        private readonly EventsService _service;
+        private readonly Mock<IParticipantsUpdatedNotifier> _partcipantsUpdatedNotifierMock;
 
         public EventsServiceTests()
         {
-            var mock = new Mock<IParticipantsUpdatedNotifier>();
-            _service = new EventsService(mock.Object);
+            _partcipantsUpdatedNotifierMock = new Mock<IParticipantsUpdatedNotifier>();
         }
 
         [Fact]
         public void RegisterParticipant_WithAnInvalidCode_ReturnsError()
         {
-            var result = _service.RegisterParticipant("bad code", "test participant");
+            var eventsService = GetEventsService();
+            var result = eventsService.RegisterParticipant("bad code", "test participant");
 
             result.ShouldBeNull();
         }
@@ -28,7 +28,8 @@ namespace FiiPrezent.Tests
         [Fact]
         public void RegisterParticipant_WithAValidCode_ReturnsSuccess()
         {
-            var result = _service.RegisterParticipant("cometothedarksidewehavecookies", "test participant");
+            var eventsService = GetEventsService();
+            var result = eventsService.RegisterParticipant("cometothedarksidewehavecookies", "test participant");
 
             result.ShouldNotBeNull();
         }
@@ -36,9 +37,45 @@ namespace FiiPrezent.Tests
         [Fact]
         public void RegisterParticipant_WithAValidCode_AddsParticipantToEvent()
         {
-            var result = _service.RegisterParticipant("cometothedarksidewehavecookies", "Tudor");
+            var eventsService = GetEventsService();
+            var result = eventsService.RegisterParticipant("cometothedarksidewehavecookies", "Tudor");
 
             result.Participants.ShouldContain("Tudor");
+        }
+
+        [Fact(Skip = "TODO")]
+        public void TryCreateEvent_WhenCodeIsUnused_ReturnsNoErrors()
+        {
+            var eventsService = GetEventsService();
+            var result = eventsService.TryCreateEvent("name", "descr", "code");
+
+//            result.EventId.ShouldNotBeNull();
+//            result.Errors.ShouldBeEmpty();
+        }
+
+        [Fact(Skip = "TODO")]
+        public void TryCreateEvent_WhenCodeIsUsed_ReturnsError()
+        {
+            var eventsService = GetEventsService();
+            var result = eventsService.TryCreateEvent("name", "descr", "code");
+
+//            result.Errors.ShouldHaveSingleItem();
+//            result.Errors[0].ShouldBe("Code already exists");
+        }
+
+        private EventsService GetEventsService(IEnumerable<Event> initialEvents = null)
+        {
+            var repo = new InMemoryEventsRepository(initialEvents ?? new[]
+            {
+                new Event
+                {
+                    Id = Guid.Parse("13db9c8b-39f6-41fb-b449-0d4ba6f9f273"),
+                    Name = "Best training ever",
+                    Description = "Modern web application development with ASP.NET Core :o",
+                    VerificationCode = "cometothedarksidewehavecookies"
+                }
+            });
+            return new EventsService(repo, _partcipantsUpdatedNotifierMock.Object);
         }
     }
 }

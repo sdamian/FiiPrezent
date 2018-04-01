@@ -1,32 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace FiiPrezent.Services
 {
     public class EventsService
     {
+        private readonly IEventsRepository _eventsRepo;
         private readonly IParticipantsUpdatedNotifier _participantsUpdatedNotifier;
 
-        private static readonly List<Event> Events = new List<Event>
+        public EventsService(
+            IEventsRepository eventsRepo,
+            IParticipantsUpdatedNotifier participantsUpdatedNotifier)
         {
-            new Event
-            {
-                Id = Guid.Parse("13db9c8b-39f6-41fb-b449-0d4ba6f9f273"),
-                Name = "Best training ever",
-                Description = "Modern web application development with ASP.NET Core :o",
-                VerificationCode = "cometothedarksidewehavecookies"
-            }
-        };
-
-        public EventsService(IParticipantsUpdatedNotifier participantsUpdatedNotifier)
-        {
+            _eventsRepo = eventsRepo;
             _participantsUpdatedNotifier = participantsUpdatedNotifier;
         }
 
         public Event RegisterParticipant(string verificationCode, string participantName)
         {
-            var @event = FindEventByVerificationCode(verificationCode);
+            var @event = _eventsRepo.FindEventByVerificationCode(verificationCode);
             if (@event == null)
             {
                 return null;
@@ -38,15 +29,29 @@ namespace FiiPrezent.Services
             return @event;
         }
 
-
-        public Event FindEventByVerificationCode(string verificationCode)
+        public CreatedResult TryCreateEvent(string name, string descr, string code)
         {
-            return Events.SingleOrDefault(x => x.VerificationCode == verificationCode);
+            var @event = new Event
+            {
+                Name = name,
+                Description = descr,
+                VerificationCode = code,
+            };
+            _eventsRepo.Add(@event);
+
+            return new CreatedResult(@event.Id);
         }
 
-        public Event FindEventById(Guid id)
+        public class CreatedResult
         {
-            return Events.Single(x => x.Id == id);
+            public CreatedResult(Guid? eventId, string[] errors = null)
+            {
+                EventId = eventId;
+                Errors = errors ?? new string[0];
+            }
+
+            public Guid? EventId { get; set; }
+            public string[] Errors { get; set; }
         }
     }
 }

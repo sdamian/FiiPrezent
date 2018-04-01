@@ -9,10 +9,14 @@ namespace FiiPrezent.Controllers
     public class HomeController : Controller
     {
         private readonly EventsService _eventsService;
+        private readonly IEventsRepository _eventsRepo;
 
-        public HomeController(EventsService eventsService)
+        public HomeController(
+            EventsService eventsService,
+            IEventsRepository eventsRepo)
         {
             _eventsService = eventsService;
+            _eventsRepo = eventsRepo;
         }
 
         public IActionResult Index()
@@ -43,7 +47,7 @@ namespace FiiPrezent.Controllers
 
         public IActionResult Event(string id)
         {
-            Event @event = _eventsService.FindEventById(Guid.Parse(id));
+            Event @event = _eventsRepo.FindEventById(Guid.Parse(id));
 
             return View(new EventViewModel(@event));
         }
