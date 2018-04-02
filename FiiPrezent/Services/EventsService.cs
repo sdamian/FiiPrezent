@@ -42,14 +42,14 @@ namespace FiiPrezent.Services
             if (string.IsNullOrEmpty(name))
                 result.AddError(ErrorType.NameIsMissing);
 
+            if (string.IsNullOrEmpty(descr))
+                result.AddError(ErrorType.DescriptionIsMissing);
+
             if (name.Length > 20)
                 result.AddError(ErrorType.NameIsTooLong);
 
             if (code.Length < 4)
                 result.AddError(ErrorType.CodeIsTooShort);
-
-            if (string.IsNullOrEmpty(descr))
-                result.AddError(ErrorType.DescriptionIsMissing);
 
             @event = new Event
             {
@@ -73,14 +73,6 @@ namespace FiiPrezent.Services
             public void AddError(ErrorType error)
             {
                 ErrorsList.Add(error);
-            }
-
-            public CreatedResult(ErrorType errorType)
-            {
-                ErrorsList = new List<ErrorType>
-                {
-                    errorType
-                };
             }
 
             public bool Succeded
