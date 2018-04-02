@@ -1,9 +1,9 @@
+using FiiPrezent.Services;
+using Moq;
+using Shouldly;
 using System;
 using System.Collections.Generic;
-using FiiPrezent.Services;
-using Shouldly;
 using Xunit;
-using Moq;
 
 namespace FiiPrezent.Tests
 {
@@ -20,17 +20,17 @@ namespace FiiPrezent.Tests
         public void RegisterParticipant_WithAnInvalidCode_ReturnsError()
         {
             var eventsService = GetEventsService();
+
             var result = eventsService.RegisterParticipant("bad code", "test participant");
 
             result.ShouldBeNull();
         }
 
-        
-
         [Fact]
         public void RegisterParticipant_WithAValidCode_ReturnsSuccess()
         {
             var eventsService = GetEventsService();
+
             var result = eventsService.RegisterParticipant("cometothedarksidewehavecookies", "test participant");
 
             result.ShouldNotBeNull();
@@ -40,11 +40,12 @@ namespace FiiPrezent.Tests
         public void RegisterParticipant_WithAValidCode_AddsParticipantToEvent()
         {
             var eventsService = GetEventsService();
+
             var result = eventsService.RegisterParticipant("cometothedarksidewehavecookies", "Tudor");
 
             result.Participants.ShouldContain("Tudor");
         }
-        
+
         [Fact]
         public void TryCreateEvent_WhenCodeIsUnused_ReturnsNoErrors()
         {
@@ -54,41 +55,29 @@ namespace FiiPrezent.Tests
 
             result.Succeded.ShouldBe(true);
         }
-        
-        [Fact]
-        public void TryCreateEvent_WhenCodeIsUsed_ReturnsError()
+
+        [Theory]
+        [InlineData("name", "description", "cometothedarksidewehavecookies", ErrorType.CodeAlreadyExists)]
+        [InlineData("name", "description", "c", ErrorType.CodeIsTooShort)]
+        [InlineData("name", "", "code", ErrorType.DescriptionIsMissing)]
+        [InlineData("", "description", "code", ErrorType.NameIsMissing)]
+        public void TryCreateEvent_WhenOneFieldIsInvalid_ReturnsError(string name, string description, string code, ErrorType error)
         {
             var eventsService = GetEventsService();
 
-            var result = eventsService.TryCreateEvent("name", "descr", "cometothedarksidewehavecookies");
-            
-            result.ErrorsList.ShouldContain(ErrorType.CodeAlreadyExists);
+            var result = eventsService.TryCreateEvent(name, description, code);
+
+            result.ErrorsList.ShouldContain(error);
         }
 
         [Fact]
-        public void RegisterParticipant_WithAllIsValid_CreateEventWithNoParticipants()
-        {
-            var eventRepo = new Mock<IEventsRepository>();
-            var eventsService = new EventsService(eventRepo.Object, _partcipantsUpdatedNotifierMock.Object);
-
-
-            var result = eventsService.TryCreateEvent("name", "description", "code");
-
-            eventRepo.Verify(e => 
-                e.Add(It.Is<Event>(x => 
-                                    x.Name == "name" && 
-                                    x.Description == "description" && 
-                                    x.VerificationCode == "code")));
-        }
-
-        [Fact]
-        public void TryCreateEvent_WhenCodeIsTooShort_ReturnsError()
+        public void TryCreateEvent_WhenNameIsTooLong_ReturnsError()
         {
             var eventsService = GetEventsService();
 
-            var result = eventsService.TryCreateEvent("name", "descr", "a");
+            var result = eventsService.TryCreateEvent(new string('*', 21), "description", "code");
 
-            result.ErrorsList.ShouldContain(ErrorType.CodeIsTooShort);
+            result.ErrorsList.ShouldContain(ErrorType.NameIsTooLong);
         }
 
         [Fact]
@@ -98,47 +87,25 @@ namespace FiiPrezent.Tests
 
             var result = eventsService.TryCreateEvent("", "descr", "a");
 
-         
             result.ErrorsList
                 .ToArray()
-                .ShouldBe(new [] { ErrorType.NameIsMissing, ErrorType.CodeIsTooShort});
-
+                .ShouldBe(new[] { ErrorType.NameIsMissing, ErrorType.CodeIsTooShort });
         }
 
         [Fact]
-        public void TryCreateEvent_WhenNameIsMissing_ReturnsError()
+        public void TryCreateEvent_WhenAllDataIsValid_CreateEventWithNoParticipants()
         {
-            var eventsService = GetEventsService();
+            var eventsRepository = new Mock<IEventsRepository>();
+            var eventsService = new EventsService(eventsRepository.Object, _partcipantsUpdatedNotifierMock.Object);
 
-            var result = eventsService.TryCreateEvent("", "descr", "code");
+            var result = eventsService.TryCreateEvent("name", "description", "code");
 
-            result.ErrorsList.ShouldContain(ErrorType.NameIsMissing);
-        }
-
-        [Fact]
-        public void TryCreateEvent_WhenNameIsTooLong_ReturnsError()
-        {
-            var eventsService = GetEventsService();
-
-            string name = "";
-            for(int i = 0; i < 30; i++)
-            {
-                name += i.ToString();
-            }
-
-            var result = eventsService.TryCreateEvent(name, "descr", "code");
-
-            result.ErrorsList.ShouldContain(ErrorType.NameIsTooLong);
-        }
-
-        [Fact]
-        public void TryCreateEvent_WhenDescriptionIsMissing_ReturnsError()
-        {
-            var eventsService = GetEventsService();
-
-            var result = eventsService.TryCreateEvent("name", "", "code");
-
-            result.ErrorsList.ShouldContain(ErrorType.DescriptionIsMissing);
+            eventsRepository.Verify(
+                    e => e.Add(It.Is<Event>(
+                         x => x.Name == "name" &&
+                              x.Description == "description" &&
+                              x.VerificationCode == "code")
+                    ));
         }
 
         private EventsService GetEventsService(IEnumerable<Event> initialEvents = null)
