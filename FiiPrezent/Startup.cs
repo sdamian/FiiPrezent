@@ -22,12 +22,13 @@ namespace FiiPrezent
         {
             services.AddSignalR();
             services.AddMvc();
-            services.AddSingleton<IEventsRepository, DbEventsRepository>();
+            services.AddScoped<IEventsRepository, DbEventsRepository>();
             services.AddScoped<EventsService>();
             services.AddScoped<IParticipantsUpdatedNotifier, ParticipantsUpdatedNotifier>();
 
             services.AddDbContext<EventsDbContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            
 
         }
         
@@ -46,6 +47,8 @@ namespace FiiPrezent
 
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
+
+          
 
         }
     }

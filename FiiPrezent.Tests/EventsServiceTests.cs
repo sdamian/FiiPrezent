@@ -97,7 +97,7 @@ namespace FiiPrezent.Tests
         public void TryCreateEvent_WhenAllDataIsValid_CreateEventWithNoParticipants()
         {
             var eventsRepository = new Mock<IEventsRepository>();
-            var eventsService = new EventsService(eventsRepository.Object, _partcipantsUpdatedNotifierMock.Object);
+            var eventsService = new EventsService(null, eventsRepository.Object, _partcipantsUpdatedNotifierMock.Object);
 
             var result = eventsService.TryCreateEvent("name", "description", "code");
 
@@ -121,7 +121,7 @@ namespace FiiPrezent.Tests
                     VerificationCode = "cometothedarksidewehavecookies"
                 }
             });
-            return new EventsService(repo, _partcipantsUpdatedNotifierMock.Object);
+            return new EventsService(null, repo, _partcipantsUpdatedNotifierMock.Object);
         }
     }
 }

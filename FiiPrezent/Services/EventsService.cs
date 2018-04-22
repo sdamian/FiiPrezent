@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FiiPrezent.Db;
 
 namespace FiiPrezent.Services
 {
     public class EventsService
     {
+        private readonly EventsDbContext _db;
         private readonly IEventsRepository _eventsRepo;
         private readonly IParticipantsUpdatedNotifier _participantsUpdatedNotifier;
 
         public EventsService(
+            EventsDbContext db,
             IEventsRepository eventsRepo,
             IParticipantsUpdatedNotifier participantsUpdatedNotifier)
         {
+            _db = db;
             _eventsRepo = eventsRepo;
             _participantsUpdatedNotifier = participantsUpdatedNotifier;
         }
@@ -25,8 +29,18 @@ namespace FiiPrezent.Services
                 return null;
             }
 
-            @event.RegisterParticipant(participantName);
-            _participantsUpdatedNotifier.OnParticipantsUpdated(@event.Id, @event.GetParticipants());
+            Participant participant = new Participant
+            {
+                Id = Guid.NewGuid(),
+                Name = participantName,
+                Event = @event
+            };
+
+            _db.Participants.Add(participant);
+            _db.SaveChanges();
+
+            _participantsUpdatedNotifier.OnParticipantsUpdated(@event.Id, 
+                _db.Participants.Where(x => x.EventId == @event.Id).Select(x => x.Name).ToArray());
 
             return @event;
         }

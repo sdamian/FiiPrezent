@@ -1,4 +1,5 @@
-﻿using FiiPrezent.Db;
+﻿using System.Linq;
+using FiiPrezent.Db;
 using FiiPrezent.Services;
 
 namespace FiiPrezent.Models
@@ -10,7 +11,7 @@ namespace FiiPrezent.Models
             Id = @event.Id.ToString();
             Name = @event.Name;
             Description = @event.Description;
-            Participants = @event.GetParticipants();
+            Participants = @event.Participants.Select(x => x.Name).ToArray();
         }
 
         public string Id { get; set; }
