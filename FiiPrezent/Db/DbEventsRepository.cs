@@ -1,47 +1,36 @@
 ﻿using System;
 using System.Linq;
-using FiiPrezent.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace FiiPrezent.Db
 {
     public class DbEventsRepository : IEventsRepository, IDisposable
     {
-        private readonly EventsDbContext _context;
+        private readonly EventsDbContext _db;
 
-        public DbEventsRepository(EventsDbContext context)
+        public DbEventsRepository(EventsDbContext db)
         {
-            _context = context;
+            _db = db;
         }
 
         public void Add(Event @event)
         {
-            _context.Add(@event);
-        }
-
-        public void Update(Event @event)
-        {
-            _context.Events.Update(@event);
+            _db.Add(@event);
         }
 
         public Event FindEventByVerificationCode(string verificationCode)
         {
-            return _context.Events.Include(x => x.Participants).SingleOrDefault(x => x.VerificationCode == verificationCode);
+            return _db.Events.Include(x => x.Participants).SingleOrDefault(x => x.VerificationCode == verificationCode);
         }
 
         public Event FindEventById(Guid id)
         {
-            return _context.Events.Include(x => x.Participants).SingleOrDefault(x => x.Id == id);
-        }
-
-        public void Delete(Guid id)
-        {
-            _context.Remove(FindEventById(id));
+            return _db.Events.Include(x => x.Participants).SingleOrDefault(x => x.Id == id);
         }
 
         public void Dispose()
         {
-            _context.SaveChanges();
+            _db.SaveChanges();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using FiiPrezent.Services;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace FiiPrezent.Db
 {

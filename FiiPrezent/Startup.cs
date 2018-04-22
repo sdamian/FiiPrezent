@@ -27,9 +27,7 @@ namespace FiiPrezent
             services.AddScoped<IParticipantsUpdatedNotifier, ParticipantsUpdatedNotifier>();
 
             services.AddDbContext<EventsDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            
-
+                options.UseSqlServer(Configuration.GetConnectionString("FiiPrezent")));
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -47,9 +45,6 @@ namespace FiiPrezent
 
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
-
-          
-
         }
     }
 }

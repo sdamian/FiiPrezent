@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using FiiPrezent.Db;
-using FiiPrezent.Services;
 
 namespace FiiPrezent.Models
 {

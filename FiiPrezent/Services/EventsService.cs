@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using FiiPrezent.Db;
 
 namespace FiiPrezent.Services
@@ -78,13 +77,7 @@ namespace FiiPrezent.Services
                 ErrorsList.Add(error);
             }
 
-            public bool Succeded
-            {
-                get
-                {
-                    return ErrorsList.Count == 0;
-                }
-            }
+            public bool Succeded => ErrorsList.Count == 0;
 
             public Guid EventId { get; set; }
             public List<ErrorType> ErrorsList { get; set; }

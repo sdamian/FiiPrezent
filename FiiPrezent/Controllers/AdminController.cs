@@ -2,7 +2,6 @@
 using System.Linq;
 using FiiPrezent.Db;
 using FiiPrezent.Models.Admin;
-using FiiPrezent.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FiiPrezent.Controllers
@@ -10,18 +9,25 @@ namespace FiiPrezent.Controllers
     public class AdminController : Controller
     {
         private readonly EventsDbContext _db;
-        private readonly IEventsRepository _eventsRepository;
 
-        public AdminController(EventsDbContext db, IEventsRepository eventsRepository)
+        public AdminController(EventsDbContext db)
         {
             _db = db;
-            _eventsRepository = eventsRepository;
         }
 
-        // GET
         public IActionResult Index()
         {
-            return View(_db.Events.ToList().Select(x => new EventListItem(x)).ToList());
+            EventListItem[] eventListItems = _db.Events
+                .Select(x => new EventListItem
+                {
+                    Id = x.Id.ToString(),
+                    Name = x.Name,
+                    Description = x.Description,
+                    SecretCode = x.VerificationCode,
+                })
+                .ToArray();
+
+            return View(eventListItems);
         }
 
         public IActionResult Create()
@@ -31,16 +37,15 @@ namespace FiiPrezent.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(CreateEvent model)
         {
-            Event @event = new Event
+            _db.Events.Add(new Event
             {
                 Name = model.Name,
                 Description = model.Description,
                 VerificationCode = model.SecretCode
-            };
-
-            _eventsRepository.Add(@event);
+            });
             _db.SaveChanges();
 
             return RedirectToAction(nameof(Index));
@@ -49,11 +54,21 @@ namespace FiiPrezent.Controllers
         public IActionResult Update(Guid id)
         {
             ViewBag.Title = "Update Event";
+            CreateEvent model = _db.Events
+                .Select(x => new CreateEvent
+                {
+                    Id = x.Id.ToString(),
+                    Name = x.Name,
+                    Description = x.Description,
+                    SecretCode = x.VerificationCode,
+                })
+                .Single(x => x.Id == id.ToString());
 
-            return View(new CreateEvent(_eventsRepository.FindEventById(id)));
+            return View(model);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Update(CreateEvent model)
         {
             Event @event = new Event
@@ -64,17 +79,20 @@ namespace FiiPrezent.Controllers
                 VerificationCode = model.SecretCode
             };
 
-            _eventsRepository.Update(@event);
+            _db.Events.Update(@event);
             _db.SaveChanges();
 
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(Guid id)
         {
-            _eventsRepository.Delete(id);
-
+            _db.Remove(new Event
+            {
+                Id = id
+            });
             _db.SaveChanges();
 
             return RedirectToAction(nameof(Index));

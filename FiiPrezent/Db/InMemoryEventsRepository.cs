@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FiiPrezent.Db;
 
-namespace FiiPrezent.Services
+namespace FiiPrezent.Db
 {
     public class InMemoryEventsRepository : IEventsRepository
     {
@@ -19,11 +18,6 @@ namespace FiiPrezent.Services
             _events.Add(@event);
         }
 
-        public void Update(Event @event)
-        {
-            throw new NotImplementedException();
-        }
-
         public Event FindEventByVerificationCode(string verificationCode)
         {
             return _events.SingleOrDefault(x => x.VerificationCode == verificationCode);
@@ -32,11 +26,6 @@ namespace FiiPrezent.Services
         public Event FindEventById(Guid id)
         {
             return _events.Single(x => x.Id == id);
-        }
-
-        public void Delete(Guid id)
-        {
-            throw new NotImplementedException();
         }
     }
 }
