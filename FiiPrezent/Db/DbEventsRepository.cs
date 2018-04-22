@@ -26,7 +26,7 @@ namespace FiiPrezent.Db
 
         public Event FindEventByVerificationCode(string verificationCode)
         {
-            return _context.Events.SingleOrDefault(x => x.VerificationCode == verificationCode);
+            return _context.Events.Include(x => x.Participants).SingleOrDefault(x => x.VerificationCode == verificationCode);
         }
 
         public Event FindEventById(Guid id)
