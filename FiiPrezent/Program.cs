@@ -18,6 +18,7 @@ namespace FiiPrezent
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseApplicationInsights()
                 .Build();
 
         public static void Migrate(IWebHost host)
