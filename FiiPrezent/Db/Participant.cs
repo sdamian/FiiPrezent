@@ -1,8 +1,16 @@
-﻿namespace FiiPrezent.Db
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace FiiPrezent.Db
 {
     public class Participant
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
+        public Guid EventId { get; set; }
+
         public string Name { get; set; }
+
+       // [ForeignKey(nameof(EventId))]
+        public Event Event { get; set; }
     }
 }
