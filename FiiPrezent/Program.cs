@@ -1,4 +1,5 @@
-﻿using FiiPrezent.Db;
+﻿using System.Net;
+using FiiPrezent.Db;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,13 @@ namespace FiiPrezent
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+//                .UseKestrel(options =>
+//                {
+//                    options.Listen(IPAddress.Loopback, 5001, listenOptions =>
+//                    {
+//                        listenOptions.UseHttps("Properties/localhost.pfx", "1234");
+//                    });
+//                })
                 .UseApplicationInsights()
                 .Build();
 

@@ -42,6 +42,11 @@ namespace FiiPrezent.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateEvent model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             _db.Events.Add(new Event
             {
                 Name = model.Name,
@@ -56,26 +61,24 @@ namespace FiiPrezent.Controllers
         public async Task<IActionResult> Update(Guid id)
         {
             ViewBag.Title = "Update Event";
-            CreateEvent model = await _db.Events
-                .Select(x => new CreateEvent
-                {
-                    Id = x.Id.ToString(),
-                    Name = x.Name,
-                    Description = x.Description,
-                    SecretCode = x.VerificationCode,
-                })
-                .SingleAsync(x => x.Id == id.ToString());
-
+            Event row = await _db.Events.SingleAsync(x => x.Id == id);
+            var model = new CreateEvent
+            {
+                Name = row.Name,
+                Description = row.Description,
+                SecretCode = row.VerificationCode,
+            };
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(CreateEvent model)
+        public async Task<IActionResult> Update(Guid id, CreateEvent model)
         {
+            Console.WriteLine(id);
             Event @event = new Event
             {
-                Id = new Guid(model.Id),
+                Id = id,
                 Name = model.Name,
                 Description = model.Description,
                 VerificationCode = model.SecretCode

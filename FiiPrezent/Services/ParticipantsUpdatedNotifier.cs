@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FiiPrezent.Hubs;
+using FiiPrezent.Models;
 using Microsoft.AspNetCore.SignalR;
 
 namespace FiiPrezent.Services
@@ -14,7 +15,7 @@ namespace FiiPrezent.Services
             _hubContext = hubContext;
         }
 
-        public async Task OnParticipantsUpdated(Guid eventId, string[] newParticipants)
+        public async Task OnParticipantsUpdated(Guid eventId, EventParticipant[] newParticipants)
         {
             var group = _hubContext.Clients.Group(eventId.ToString());
             // the null is a stupid hack to pass the participants array as one param

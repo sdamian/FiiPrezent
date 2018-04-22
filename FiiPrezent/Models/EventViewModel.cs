@@ -10,12 +10,15 @@ namespace FiiPrezent.Models
             Id = @event.Id.ToString();
             Name = @event.Name;
             Description = @event.Description;
-            Participants = @event.Participants.Select(x => x.Name).ToArray();
+            Participants = @event.Participants
+                .Select(x => new EventParticipant(x.Name, x.PhotoUrl))
+                .ToArray();
         }
 
-        public string Id { get; set; }
+        public string Id { get; }
         public string Name { get; }
         public string Description { get; }
-        public string[] Participants { get; }
+        public EventParticipant[] Participants { get; }
     }
+
 }

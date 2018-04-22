@@ -1,8 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FiiPrezent.Models;
+using FiiPrezent.Services;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace FiiPrezent.Db
 {
-    public class EventsDbContext: DbContext
+    public class EventsDbContext: IdentityDbContext<ApplicationUser>
     {
         public EventsDbContext(DbContextOptions<EventsDbContext> options)
             : base(options)

@@ -3,6 +3,7 @@ using Moq;
 using Shouldly;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FiiPrezent.Db;
 using Xunit;
@@ -23,7 +24,7 @@ namespace FiiPrezent.Tests
         {
             var eventsService = GetEventsService();
 
-            var result = await eventsService.RegisterParticipant("bad code", "test participant");
+            var result = await eventsService.RegisterParticipant("bad code", "test participant", String.Empty);
 
             result.ShouldBeNull();
         }
@@ -33,7 +34,7 @@ namespace FiiPrezent.Tests
         {
             var eventsService = GetEventsService();
 
-            var result = await eventsService.RegisterParticipant("cometothedarksidewehavecookies", "test participant");
+            var result = await eventsService.RegisterParticipant("cometothedarksidewehavecookies", "test participant", String.Empty);
 
             result.ShouldNotBeNull();
         }
@@ -43,9 +44,9 @@ namespace FiiPrezent.Tests
         {
             var eventsService = GetEventsService();
 
-            var result = await eventsService.RegisterParticipant("cometothedarksidewehavecookies", "Tudor");
+            var result = await eventsService.RegisterParticipant("cometothedarksidewehavecookies", "Tudor", String.Empty);
 
-            result.GetParticipants().ShouldContain("Tudor");
+            result.Participants.Select(x => x.Name).ShouldContain("Tudor");
         }
 
         [Fact]

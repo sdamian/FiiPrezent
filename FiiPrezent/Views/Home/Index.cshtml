@@ -1,4 +1,7 @@
-﻿@model RsvpViewModel
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@model RsvpViewModel
+
 @{
     ViewBag.Title = "Fii Prezent";
 }
@@ -7,11 +10,12 @@
 
     <div class="col-sm-4 col-sm-offset-4">
         <h2>Fii Prezent</h2>
+
         <form asp-controller="Home" asp-action="Index" method="post">
             <div class="form-group">
-                @* @Html.LabelFor(x => x.Name) *@
                 <label asp-for="Name">Name</label>
-                <input asp-for="Name" type="text" class="form-control" id="name" placeholder="Nume">
+                <input asp-for="Name" type="text" class="form-control" id="name" placeholder="Nume"
+                       readonly="@(SignInManager.IsSignedIn(User) ? "readonly" : null)">
                 <span asp-validation-for="Name"></span>
             </div>
             <div class="form-group">
@@ -22,6 +26,28 @@
             <button type="submit" class="btn btn-default">Prezent</button>
 
         </form>
+
+        @if (!SignInManager.IsSignedIn(User))
+        {
+            <form asp-action="ExternalLogin" asp-controller="Account" method="post" class="form-horizontal">
+                <button type="submit"
+                        value="Facebook" title="Log in using your Facebook account"
+                        class="btn btn-default"
+                        name="provider">
+                    Log in with Facebook
+                </button>
+            </form>
+        }
+        else
+        {
+            <form asp-action="LogOut" asp-controller="Account" method="post" class="form-horizontal">
+                <button type="submit"
+                        value="LogOut" title="Sign Out"
+                        class="btn btn-default" >
+                    Sign Out
+                </button>
+            </form>
+        }
     </div>
 
 

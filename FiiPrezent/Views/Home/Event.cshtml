@@ -8,35 +8,37 @@
 <h2>@Model.Name</h2>
 <span>@Model.Description</span>
 
-<ol id="participants">
-    @foreach (string participant in @Model.Participants)
-    {
-        <li>@participant</li>
-    }
-</ol>
-
+<div class="container-fluid" id="participants">
+</div>
 
 @section Scripts
 {
     <script>
-        var participantsList = document.getElementById("participants");
-        var connection = new signalR.HubConnection("/participants");
-        
-        function appendParticipant(name) {
-            var li = document.createElement("li");
-            li.innerText = name;
-            participantsList.appendChild(li);
+        function renderParticipants(list) {
+            var items = [];
+            list.forEach(function (p) {
+                items.push($('<div>')
+                    .addClass('col-sm-3')
+                    .append(
+                        $('<img>').attr('src', item.photoUrl).addClass('img-responsive'),
+                        p.name
+                    )
+                );
+            });
+            $('#participants').html(items);
         }
 
-        connection.on('Update', (list) => {
-            participantsList.innerHTML = "";
-            list.forEach(function (el) {
-                appendParticipant(el);
+        $(function() {
+            renderParticipants(@Html.Raw(Json.Serialize(Model.Participants)));
+            var connection = new signalR.HubConnection("/participants");
+            connection.on('Update', function(list) {
+                renderParticipants(list);
+            });
+
+            connection.start().then(function() {
+                connection.invoke("JoinEventRoom", "@Model.Id");
             });
         });
 
-        connection.start().then(function () {
-            connection.invoke("JoinEventRoom", "@Model.Id");
-        });
     </script>
 }

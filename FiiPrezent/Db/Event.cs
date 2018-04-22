@@ -27,16 +27,12 @@ namespace FiiPrezent.Db
 
         public ICollection<Participant> Participants { get; set; }
 
-        public string[] GetParticipants()
-        {
-            return Participants.Select(x => x.Name).ToArray();
-        }
-
-        public void RegisterParticipant(string name)
+        public void RegisterParticipant(string name, string photoUrl)
         {
             Participants.Add(new Participant
             {
-                Name = name
+                Name = name,
+                PhotoUrl = photoUrl
             });
         }
 

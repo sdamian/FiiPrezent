@@ -1,12 +1,14 @@
-﻿using FiiPrezent.Db;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FiiPrezent.Models.Admin
 {
     public class CreateEvent
     {
-        public string Id { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string Description { get; set; }
+        [Required]
         public string SecretCode { get; set; }
     }
 }

@@ -11,9 +11,10 @@ using System;
 namespace FiiPrezent.Migrations
 {
     [DbContext(typeof(EventsDbContext))]
-    partial class EventsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180428203348_Identity")]
+    partial class Identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,8 +49,6 @@ namespace FiiPrezent.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("PhotoUrl");
-
                     b.HasKey("Id");
 
                     b.HasIndex("EventId");
@@ -72,8 +71,6 @@ namespace FiiPrezent.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
-                    b.Property<string>("FullName");
-
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
@@ -89,8 +86,6 @@ namespace FiiPrezent.Migrations
                     b.Property<string>("PhoneNumber");
 
                     b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<string>("PhotoUrl");
 
                     b.Property<string>("SecurityStamp");
 

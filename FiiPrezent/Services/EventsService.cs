@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FiiPrezent.Db;
+using FiiPrezent.Models;
 
 namespace FiiPrezent.Services
 {
@@ -18,7 +20,7 @@ namespace FiiPrezent.Services
             _participantsUpdatedNotifier = participantsUpdatedNotifier;
         }
 
-        public async Task<Event> RegisterParticipant(string verificationCode, string participantName)
+        public async Task<Event> RegisterParticipant(string verificationCode, string participantName, string photoUrl)
         {
             var @event = await _eventsRepo.FindEventByVerificationCode(verificationCode);
             if (@event == null)
@@ -26,8 +28,12 @@ namespace FiiPrezent.Services
                 return null;
             }
 
-            @event.RegisterParticipant(participantName);
-            await _participantsUpdatedNotifier.OnParticipantsUpdated(@event.Id, @event.GetParticipants());
+            @event.RegisterParticipant(participantName, photoUrl);
+            var newParticipants = @event.Participants
+                .Select(x => new EventParticipant(x.Name, x.PhotoUrl))
+                .ToArray();
+
+            await _participantsUpdatedNotifier.OnParticipantsUpdated(@event.Id, newParticipants);
 
             return @event;
         }

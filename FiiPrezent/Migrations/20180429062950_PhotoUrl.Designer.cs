@@ -11,9 +11,10 @@ using System;
 namespace FiiPrezent.Migrations
 {
     [DbContext(typeof(EventsDbContext))]
-    partial class EventsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180429062950_PhotoUrl")]
+    partial class PhotoUrl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,8 +48,6 @@ namespace FiiPrezent.Migrations
                     b.Property<Guid>("EventId");
 
                     b.Property<string>("Name");
-
-                    b.Property<string>("PhotoUrl");
 
                     b.HasKey("Id");
 
