@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FiiPrezent.Db
 {
@@ -18,14 +19,14 @@ namespace FiiPrezent.Db
             _events.Add(@event);
         }
 
-        public Event FindEventByVerificationCode(string verificationCode)
+        public Task<Event> FindEventByVerificationCode(string verificationCode)
         {
-            return _events.SingleOrDefault(x => x.VerificationCode == verificationCode);
+            return Task.FromResult(_events.SingleOrDefault(x => x.VerificationCode == verificationCode));
         }
 
-        public Event FindEventById(Guid id)
+        public Task<Event> FindEventById(Guid id)
         {
-            return _events.Single(x => x.Id == id);
+            return Task.FromResult(_events.Single(x => x.Id == id));
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using FiiPrezent.Db;
 using FiiPrezent.Models.Admin;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FiiPrezent.Controllers
 {
@@ -15,9 +17,9 @@ namespace FiiPrezent.Controllers
             _db = db;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            EventListItem[] eventListItems = _db.Events
+            EventListItem[] eventListItems = await _db.Events
                 .Select(x => new EventListItem
                 {
                     Id = x.Id.ToString(),
@@ -25,7 +27,7 @@ namespace FiiPrezent.Controllers
                     Description = x.Description,
                     SecretCode = x.VerificationCode,
                 })
-                .ToArray();
+                .ToArrayAsync();
 
             return View(eventListItems);
         }
@@ -38,7 +40,7 @@ namespace FiiPrezent.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateEvent model)
+        public async Task<IActionResult> Create(CreateEvent model)
         {
             _db.Events.Add(new Event
             {
@@ -46,15 +48,15 @@ namespace FiiPrezent.Controllers
                 Description = model.Description,
                 VerificationCode = model.SecretCode
             });
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Update(Guid id)
+        public async Task<IActionResult> Update(Guid id)
         {
             ViewBag.Title = "Update Event";
-            CreateEvent model = _db.Events
+            CreateEvent model = await _db.Events
                 .Select(x => new CreateEvent
                 {
                     Id = x.Id.ToString(),
@@ -62,14 +64,14 @@ namespace FiiPrezent.Controllers
                     Description = x.Description,
                     SecretCode = x.VerificationCode,
                 })
-                .Single(x => x.Id == id.ToString());
+                .SingleAsync(x => x.Id == id.ToString());
 
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(CreateEvent model)
+        public async Task<IActionResult> Update(CreateEvent model)
         {
             Event @event = new Event
             {
@@ -80,20 +82,20 @@ namespace FiiPrezent.Controllers
             };
 
             _db.Events.Update(@event);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             _db.Remove(new Event
             {
                 Id = id
             });
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }

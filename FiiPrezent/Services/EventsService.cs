@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using FiiPrezent.Db;
 
 namespace FiiPrezent.Services
@@ -17,24 +18,23 @@ namespace FiiPrezent.Services
             _participantsUpdatedNotifier = participantsUpdatedNotifier;
         }
 
-        public Event RegisterParticipant(string verificationCode, string participantName)
+        public async Task<Event> RegisterParticipant(string verificationCode, string participantName)
         {
-            var @event = _eventsRepo.FindEventByVerificationCode(verificationCode);
+            var @event = await _eventsRepo.FindEventByVerificationCode(verificationCode);
             if (@event == null)
             {
                 return null;
             }
-            @event.RegisterParticipant(participantName);
 
-           
-            _participantsUpdatedNotifier.OnParticipantsUpdated(@event.Id, @event.GetParticipants());
+            @event.RegisterParticipant(participantName);
+            await _participantsUpdatedNotifier.OnParticipantsUpdated(@event.Id, @event.GetParticipants());
 
             return @event;
         }
 
-        public CreatedResult TryCreateEvent(string name, string descr, string code)
+        public async Task<CreatedResult> TryCreateEvent(string name, string descr, string code)
         {
-            var @event = _eventsRepo.FindEventByVerificationCode(code);
+            var @event = await _eventsRepo.FindEventByVerificationCode(code);
 
             CreatedResult result = new CreatedResult();
 

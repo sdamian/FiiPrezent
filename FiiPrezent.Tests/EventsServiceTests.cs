@@ -3,6 +3,7 @@ using Moq;
 using Shouldly;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using FiiPrezent.Db;
 using Xunit;
 
@@ -18,41 +19,41 @@ namespace FiiPrezent.Tests
         }
 
         [Fact]
-        public void RegisterParticipant_WithAnInvalidCode_ReturnsError()
+        public async Task RegisterParticipant_WithAnInvalidCode_ReturnsError()
         {
             var eventsService = GetEventsService();
 
-            var result = eventsService.RegisterParticipant("bad code", "test participant");
+            var result = await eventsService.RegisterParticipant("bad code", "test participant");
 
             result.ShouldBeNull();
         }
 
         [Fact]
-        public void RegisterParticipant_WithAValidCode_ReturnsSuccess()
+        public async Task RegisterParticipant_WithAValidCode_ReturnsSuccess()
         {
             var eventsService = GetEventsService();
 
-            var result = eventsService.RegisterParticipant("cometothedarksidewehavecookies", "test participant");
+            var result = await eventsService.RegisterParticipant("cometothedarksidewehavecookies", "test participant");
 
             result.ShouldNotBeNull();
         }
 
         [Fact]
-        public void RegisterParticipant_WithAValidCode_AddsParticipantToEvent()
+        public async Task RegisterParticipant_WithAValidCode_AddsParticipantToEvent()
         {
             var eventsService = GetEventsService();
 
-            var result = eventsService.RegisterParticipant("cometothedarksidewehavecookies", "Tudor");
+            var result = await eventsService.RegisterParticipant("cometothedarksidewehavecookies", "Tudor");
 
             result.GetParticipants().ShouldContain("Tudor");
         }
 
         [Fact]
-        public void TryCreateEvent_WhenCodeIsUnused_ReturnsNoErrors()
+        public async Task TryCreateEvent_WhenCodeIsUnused_ReturnsNoErrors()
         {
             var eventsService = GetEventsService();
 
-            var result = eventsService.TryCreateEvent("name", "descr", "code");
+            var result = await eventsService.TryCreateEvent("name", "descr", "code");
 
             result.Succeded.ShouldBe(true);
         }
@@ -62,31 +63,31 @@ namespace FiiPrezent.Tests
         [InlineData("name", "description", "c", ErrorType.CodeIsTooShort)]
         [InlineData("name", "", "code", ErrorType.DescriptionIsMissing)]
         [InlineData("", "description", "code", ErrorType.NameIsMissing)]
-        public void TryCreateEvent_WhenOneFieldIsInvalid_ReturnsError(string name, string description, string code, ErrorType error)
+        public async Task TryCreateEvent_WhenOneFieldIsInvalid_ReturnsError(string name, string description, string code, ErrorType error)
         {
             var eventsService = GetEventsService();
 
-            var result = eventsService.TryCreateEvent(name, description, code);
+            var result = await eventsService.TryCreateEvent(name, description, code);
 
             result.ErrorsList.ShouldContain(error);
         }
 
         [Fact]
-        public void TryCreateEvent_WhenNameIsTooLong_ReturnsError()
+        public async Task TryCreateEvent_WhenNameIsTooLong_ReturnsError()
         {
             var eventsService = GetEventsService();
 
-            var result = eventsService.TryCreateEvent(new string('*', 21), "description", "code");
+            var result = await eventsService.TryCreateEvent(new string('*', 21), "description", "code");
 
             result.ErrorsList.ShouldContain(ErrorType.NameIsTooLong);
         }
 
         [Fact]
-        public void TryCreateEvent_WhenNameIsMissingAndCodeIsTooShort_ReturnsError()
+        public async Task TryCreateEvent_WhenNameIsMissingAndCodeIsTooShort_ReturnsError()
         {
             var eventsService = GetEventsService();
 
-            var result = eventsService.TryCreateEvent("", "descr", "a");
+            var result = await eventsService.TryCreateEvent("", "descr", "a");
 
             result.ErrorsList
                 .ToArray()
@@ -94,12 +95,12 @@ namespace FiiPrezent.Tests
         }
 
         [Fact]
-        public void TryCreateEvent_WhenAllDataIsValid_CreateEventWithNoParticipants()
+        public async Task TryCreateEvent_WhenAllDataIsValid_CreatesEventWithNoParticipants()
         {
             var eventsRepository = new Mock<IEventsRepository>();
             var eventsService = new EventsService(eventsRepository.Object, _partcipantsUpdatedNotifierMock.Object);
 
-            var result = eventsService.TryCreateEvent("name", "description", "code");
+            await eventsService.TryCreateEvent("name", "description", "code");
 
             eventsRepository.Verify(
                     e => e.Add(It.Is<Event>(

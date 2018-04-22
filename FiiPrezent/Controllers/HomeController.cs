@@ -3,6 +3,7 @@ using FiiPrezent.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
+using System.Threading.Tasks;
 using FiiPrezent.Db;
 
 namespace FiiPrezent.Controllers
@@ -26,14 +27,14 @@ namespace FiiPrezent.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(RsvpViewModel model)
+        public async Task<IActionResult> Index(RsvpViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            Event @event = _eventsService.RegisterParticipant(model.Code, model.Name);
+            Event @event = await _eventsService.RegisterParticipant(model.Code, model.Name);
             if (@event == null)
             {
                 ModelState.AddModelError<RsvpViewModel>(x => x.Code, "Wrong verification code");
@@ -46,9 +47,9 @@ namespace FiiPrezent.Controllers
             });
         }
 
-        public IActionResult Event(string id)
+        public async Task<IActionResult> Event(string id)
         {
-            Event @event = _eventsRepo.FindEventById(Guid.Parse(id));
+            Event @event = await _eventsRepo.FindEventById(Guid.Parse(id));
 
             return View(new EventViewModel(@event));
         }
