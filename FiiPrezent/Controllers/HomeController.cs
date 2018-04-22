@@ -3,6 +3,7 @@ using FiiPrezent.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
+using FiiPrezent.Db;
 
 namespace FiiPrezent.Controllers
 {

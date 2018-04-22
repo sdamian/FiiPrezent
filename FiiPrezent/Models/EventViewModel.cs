@@ -1,4 +1,4 @@
-﻿using FiiPrezent.Controllers;
+﻿using FiiPrezent.Db;
 using FiiPrezent.Services;
 
 namespace FiiPrezent.Models
@@ -10,7 +10,7 @@ namespace FiiPrezent.Models
             Id = @event.Id.ToString();
             Name = @event.Name;
             Description = @event.Description;
-            Participants = @event.Participants;
+            Participants = @event.GetParticipants();
         }
 
         public string Id { get; set; }

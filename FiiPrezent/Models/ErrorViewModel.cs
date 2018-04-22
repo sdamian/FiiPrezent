@@ -1,5 +1,3 @@
-using System;
-
 namespace FiiPrezent.Models
 {
     public class ErrorViewModel

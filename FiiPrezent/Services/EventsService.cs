@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using FiiPrezent.Db;
 
 namespace FiiPrezent.Services
 {
@@ -25,7 +26,7 @@ namespace FiiPrezent.Services
             }
 
             @event.RegisterParticipant(participantName);
-            _participantsUpdatedNotifier.OnParticipantsUpdated(@event.Id, @event.Participants);
+            _participantsUpdatedNotifier.OnParticipantsUpdated(@event.Id, @event.GetParticipants());
 
             return @event;
         }

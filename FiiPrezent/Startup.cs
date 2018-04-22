@@ -1,23 +1,34 @@
-﻿using System;
+﻿using FiiPrezent.Db;
 using FiiPrezent.Hubs;
 using FiiPrezent.Services;
-using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FiiPrezent
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSignalR();
             services.AddMvc();
-            services.AddSingleton<IEventsRepository, InMemoryEventsRepository>();
+            services.AddSingleton<IEventsRepository, DbEventsRepository>();
             services.AddScoped<EventsService>();
             services.AddScoped<IParticipantsUpdatedNotifier, ParticipantsUpdatedNotifier>();
+
+            services.AddDbContext<EventsDbContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -25,6 +36,7 @@ namespace FiiPrezent
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
 
             app.UseSignalR(routes =>

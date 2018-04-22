@@ -1,22 +1,23 @@
 ﻿using System;
+using FiiPrezent.Db;
 using FiiPrezent.Models.Admin;
-using FiiPrezent.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FiiPrezent.Controllers
 {
     public class AdminController : Controller
     {
-        private readonly EventsService _eventsService;
+        private readonly EventsDbContext _db;
 
-        public AdminController(EventsService eventsService)
+        public AdminController(EventsDbContext db)
         {
-            _eventsService = eventsService;
+            _db = db;
         }
 
         // GET
         public IActionResult Index()
         {
+            // TODO: return data from _db
             var result = new[]
             {
                 new EventListItem

@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FiiPrezent.Db;
 
 namespace FiiPrezent.Services
 {
     public class InMemoryEventsRepository : IEventsRepository
     {
         private readonly List<Event> _events = new List<Event>();
-
-        public InMemoryEventsRepository()
-        {
-
-        }
 
         public InMemoryEventsRepository(IEnumerable<Event> events)
         {

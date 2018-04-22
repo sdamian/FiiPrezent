@@ -3,6 +3,7 @@ using Moq;
 using Shouldly;
 using System;
 using System.Collections.Generic;
+using FiiPrezent.Db;
 using Xunit;
 
 namespace FiiPrezent.Tests
@@ -43,7 +44,7 @@ namespace FiiPrezent.Tests
 
             var result = eventsService.RegisterParticipant("cometothedarksidewehavecookies", "Tudor");
 
-            result.Participants.ShouldContain("Tudor");
+            result.GetParticipants().ShouldContain("Tudor");
         }
 
         [Fact]
