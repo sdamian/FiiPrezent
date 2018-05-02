@@ -16,11 +16,11 @@
     <script>
         function renderParticipants(list) {
             var items = [];
-            list.forEach(function (p) {
+            list.forEach(function (participant) {
                 items.push($('<div>')
                     .addClass('col-sm-3')
                     .append(
-                        $('<img>').attr('src', item.photoUrl).addClass('img-responsive'),
+                        $('<img>').attr('src', participant.photoUrl).addClass('img-responsive'),
                         p.name
                     )
                 );
